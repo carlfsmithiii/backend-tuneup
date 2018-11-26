@@ -2,13 +2,26 @@
 # -*- coding: utf-8 -*-
 """Tuneup assignment"""
 
-__author__ = "???"
+__author__ = "Carl Smith"
 
 
 def profile(func):
     """A function that can be used as a decorator to meausre performance"""
-    import cProfile, pstats, io
-    raise NotImplementedError("Complete this decorator function")
+    import cProfile
+    import pstats
+    # import io
+
+    def wrapper(*args, **kwargs):
+        profiler = cProfile.Profile()
+        profiler.enable()
+        result = func(*args, **kwargs)
+        profiler.disable()
+        sortby = pstats.SortKey.CUMULATIVE
+        ps = pstats.Stats(profiler).sort_stats(sortby)
+        ps.print_stats()
+
+        return result
+    return wrapper
 
 
 def read_movies(src):
@@ -26,6 +39,7 @@ def is_duplicate(needle, haystack):
     return False
 
 
+@profile
 def find_duplicate_movies(src):
     """Returns a list of duplicate movies from a src list"""
     movies = read_movies(src)
@@ -40,6 +54,12 @@ def find_duplicate_movies(src):
 def timeit_helper():
     """Part A:  Obtain some profiling measurements using timeit"""
     # YOUR CODE GOES HERE
+    import timeit
+    t = timeit.Timer(setup='pass',
+                     stmt="find_duplicate_movies('movies.txt')",
+                     globals=globals())
+    result = t.repeat(repeat=7, number=3)
+    print("minimum of average performances: " + str(min(result)))
 
 
 def main():
@@ -51,3 +71,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # timeit_helper()
