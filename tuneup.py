@@ -28,15 +28,12 @@ def read_movies(src):
     """Read a list of movie titles"""
     print('Reading file: {}'.format(src))
     with open(src, 'r') as f:
-        return f.read().splitlines()
+        return f.read().lower().splitlines()
 
 
 def is_duplicate(needle, haystack):
     """Case insensitive search within a list"""
-    for title in haystack:
-        if needle.lower() == title.lower():
-            return True
-    return False
+    return needle in haystack
 
 
 @profile
